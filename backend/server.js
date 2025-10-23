@@ -130,16 +130,19 @@ app.post('/api/players/:puuid/fetch-matches', async (req, res) => {
         
         const matchData = matchResponse.data;
         
-        // 4. Find the specific player in the match
         const participant = matchData.info.participants.find(p => p.puuid === puuid);
         
         if (participant) {
-          // Extract all the data including creep scores
           const totalMinionsKilled = participant.totalMinionsKilled || 0;
           const neutralMinionsKilled = participant.neutralMinionsKilled || 0;
-          const cs = totalMinionsKilled + neutralMinionsKilled; // Use 'cs' instead of 'total_creeps'
           
-          // Calculate KDA
+          const challenges = participant.challenges || {};
+          const jungleCsBefore10Min = challenges.jungleCsBefore10Min || 0;
+          const epicMonsterKills = participant.objectivesEpicMonsterKills || 0;
+          const monsterKills = participant.objectivesMonsterKills || 0;
+          
+          const totalCS = totalMinionsKilled + neutralMinionsKilled + epicMonsterKills;
+          
           const kda = parseFloat(((participant.kills + participant.assists) / Math.max(participant.deaths, 1)).toFixed(2));
           
           // 5. Store match in database using 'cs' column
@@ -163,7 +166,7 @@ app.post('/api/players/:puuid/fetch-matches', async (req, res) => {
                 item5: participant.item5,
                 item6: participant.item6
               }),
-              cs, // Use 'cs' here
+              totalCS, 
               participant.goldEarned, participant.totalDamageDealtToChampions,
               new Date(matchData.info.gameStartTimestamp)
             ]
