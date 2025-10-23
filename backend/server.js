@@ -101,7 +101,7 @@ app.post('/api/players/:puuid/fetch-matches', async (req, res) => {
   try {
     const { puuid } = req.params;
     
-    // 1. Get match IDs from Riot API
+    // Get match IDs from Riot API
     const matchIdsResponse = await axios.get(
       `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids`,
       {
@@ -113,7 +113,7 @@ app.post('/api/players/:puuid/fetch-matches', async (req, res) => {
     const matchIds = matchIdsResponse.data;
     let processedCount = 0;
     
-    // 2. Process each match
+    // Process each match
     for (const matchId of matchIds) {
       // Check if match already exists in database
       const existingMatch = await pool.query(
@@ -122,7 +122,7 @@ app.post('/api/players/:puuid/fetch-matches', async (req, res) => {
       );
       
       if (existingMatch.rows.length === 0) {
-        // 3. Get detailed match data from Riot API
+        // Get detailed match data from Riot API
         const matchResponse = await axios.get(
           `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}`,
           { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } }
@@ -145,7 +145,7 @@ app.post('/api/players/:puuid/fetch-matches', async (req, res) => {
           
           const kda = parseFloat(((participant.kills + participant.assists) / Math.max(participant.deaths, 1)).toFixed(2));
           
-          // 5. Store match in database using 'cs' column
+          // Store match in database using 'cs' column
           await pool.query(
             `INSERT INTO matches 
             (match_id, puuid, champion, kills, deaths, assists, kda, win, 
@@ -240,7 +240,7 @@ app.post('/players', async(req, res) => {
     }
 });
 
-//add new match - FIXED to use 'cs' instead of creep columns
+//add new match 
 app.post('/matches', async (req, res) => {
     try {
         const {

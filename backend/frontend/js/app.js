@@ -16,7 +16,7 @@ async function searchPlayer() {
         }
         
         await fetch(`/api/players/${data.puuid}/fetch-matches`, { method: 'POST' });
-        // Get profile icon URL from Riot's CDN
+        // Get profile icon URL from Riot
         const profileIconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${data.player.profile_icon_id}.png`;
         
         // Display player info immediately
@@ -66,7 +66,6 @@ async function loadMatches(puuid) {
         } else if (matchesData.length === 0) {
             matchesHTML += '<p>No matches found in database.</p>';
         } else {
-            // Now we can safely use forEach
             matchesData.forEach(match => {
                 const championIconUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${match.champion}.png`;
                 matchesHTML += `

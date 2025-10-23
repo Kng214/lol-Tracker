@@ -36,6 +36,6 @@ Thumbs.db
 *.swp
 *.swo
 
-# Database files (optional)
+# Database files 
 *.db
 *.sqlite
